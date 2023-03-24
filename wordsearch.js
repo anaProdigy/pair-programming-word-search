@@ -1,60 +1,87 @@
-// receives a 2D array of letters and a word
-// Check to find the word horizontally and vertically
-// Return true if the word is found, and return false if the word is not found
-
-// When the present tests are successful, ask yourself, "Do the current tests cover all the possible cases?"
-// What if the word is written vertically, not horizontally?
-// What about the case where the word matrix is an empty array?
-// write tests for these cases (and any others that you think of)
-// modify the wordSearch function to make those new tests pass.
+// Partners: Anastasia Zaika & Nicole Law;
 
 const wordSearch = (letters, word) => {
-    //we check if the matrix is an empty array and return false if it is
-    if (letters.length === 0) {
+    if ((letters.length === 0) || (!word)) {
         return false;
     }
-    //we check the horiontal arrays by turning them into strings
+
+
+
+
+    //finding horizontal word
     const horizontalJoin = letters.map((ls) => ls.join(""));
+    // console.log("horizontalJoin",horizontalJoin);
     for (l of horizontalJoin) {
-        if (l.includes(word)) {
+        //console.log("l", l);
+        if (l.includes(word)) return true;
+    }
+
+    //finding horizontal word backwards
+    const horizontalReverse = letters.map((ls) => ls.reverse().join(""));
+    for (l of horizontalReverse) {
+        //console.log("l", l);
+        if (l.includes(word)) return true;
+    }
+
+    // for (let i = 0; i < letters.length; i++) {
+    //   if (letters[i].reverse().join("").includes(word)) {
+    //     return true;
+    //   }
+    // }
+
+    //creating vertical array
+    const verticalArr = [];
+    for (let i = 0; i <= letters[0].length; i++) {
+        verticalArr.push([]);
+        //console.log("verticalArr", verticalArr);
+        for (let j = 0; j < letters.length; j++) {
+            verticalArr[i].push(letters[j][i]);
+        }
+    }
+
+    //finding vertical word
+    const verticalJoin = verticalArr.map((ls) => ls.join(""));
+    for (l of verticalJoin) {
+        if (l.includes(word)) return true;
+    }
+
+    //finding vertical word backwards
+    for (let i = 0; i < verticalArr.length; i++) {
+        if (verticalArr[i].reverse().join("").includes(word)) {
             return true;
         }
     }
-    //we create an array of vertical letters, turn it into a string and check for the word
-    for (let x = 0; x <= letters[0].length; ++x) {
-        let temp = [];
-        for (let y = 0; y < letters.length; ++y) {
-            temp.push(letters[y][x]);
+
+    //creating diagonal array
+    let diagonalArr = [];
+    let j = 0;
+    let k = 0;
+    for (let i = 0; i < letters.length; i++, j++) {
+        console.log("FIRST", word.substring(k, k + 1), i, j, k, letters[i][j]);
+        if (word.substring(k, k + 1) === letters[i][j]) { //identify starting point of diagonal
+            //take the first letter from the word, search for this element then only we will begin our diagonal search
+            diagonalArr.push(letters[i][j]);
         }
-        console.log(temp.join(""));
-        if (temp.join("").includes(word)) {
-            return true;
-        }
+        k = k + 1;
     }
-    //we return false if the word is not present
+    if (diagonalArr.join("").includes(word)) {
+        return true;
+    }
+    console.log("diagonalArr", diagonalArr);
+
     return false;
 };
 
-wordSearch(
-    [
-        ["A", "W", "C", "F", "Q", "U", "A", "L"],
-        ["S", "E", "I", "N", "F", "E", "L", "D"],
-        ["Y", "F", "C", "F", "Q", "U", "A", "L"],
-        ["H", "M", "J", "T", "E", "V", "R", "G"],
-        ["W", "H", "C", "S", "Y", "E", "R", "L"],
-        ["B", "F", "R", "E", "N", "E", "Y", "B"],
-        ["U", "B", "T", "W", "A", "P", "A", "I"],
-        ["O", "D", "C", "A", "K", "U", "A", "S"],
-        ["E", "Z", "K", "F", "Q", "U", "A", "L"],
-    ],
-    "LDLGLBIS8"
-);
-
 module.exports = wordSearch;
 
-// const wordSearch = (letters, word) => {
-//   const horizontalJoin = letters.map((ls) => ls.join(""));
-//   for (l of horizontalJoin) {
-//     if (l.includes(word)) return true;
-//   }
-// };
+//Patterns for Diagonal
+// [W  I   F   E   E   Y  I]
+// 01  12  23  34  45  56  67 78
+
+// [A E C T Y E A S]
+// 00  11  22  33  44   55  66  77
+
+// [S  F  J  S  N  P  A  L]
+// 10 21 32 43 54 65 76 87
+
+// 20 31 42 53 64 75 86
